@@ -44,11 +44,9 @@ module.exports.onSeveral = function(events, callback, once) {
   
   for (i in events) {
     var fn = null;
-    if (typeof this.eventTable[events[i]] == 'undefined') {
+    if (!this.eventTable[events[i]]) {
       fn = (function(event, once) {
-        console.log('!!!!!! creating listener for ', event);
         return function() {
-          console.log('!!!!!! ON', event, once);
           this.evaluateEvent(event, once, arguments);
         };
       })(events[i], once);
