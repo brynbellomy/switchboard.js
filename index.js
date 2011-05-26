@@ -44,7 +44,7 @@ module.exports.onSeveral = function(events, callback, once) {
   
   for (i in events) {
     var fn = null;
-    if (!this.eventTable[events[i]]) {
+    if (!this.eventTable[events[i]][key]) {
       fn = (function(event, once) {
         return function() {
           console.log('!!!!!! ON', event, once);
