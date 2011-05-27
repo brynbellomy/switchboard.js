@@ -149,7 +149,7 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
       console.log('ENTRIES', key, this.entries[key]);
       
       // execute the callback
-      (function(args, key) {this.entries[key].callback(args)})(args, key);
+      (function(args, callback) {callback(args)})(args, this.entries[key].callback);
       console.log('ENTRIES AFTER', key, this.entries);
       
       // delete entry if it's a "once" event
