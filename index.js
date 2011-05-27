@@ -146,6 +146,8 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
         args[eventName] = this.argumentStore[eventName];
       }
       
+      console.log('ENTRIES', key, this.entries);
+      
       // execute the callback
       this.entries[key].callback(args);
       
