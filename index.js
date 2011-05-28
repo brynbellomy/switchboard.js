@@ -48,7 +48,7 @@ module.exports.onSeveral = function(events, callback, once) {
     if (!this.eventTable[events[i]]) {
       fn = (function(event, once) {
         return function() {
-          this.evaluateEvent(event, once, arguments);
+          this.obtainEvaluateEventLock(event, once, arguments);
         };
       })(events[i], once);
       
@@ -116,17 +116,25 @@ module.exports.resetEvents = function(events) {
  *
  * this is called by switchboard when any of the registered events is fired.
  */
-module.exports.evaluateEvent = function(event, once, eventArgs) {
-  if (this.lock == true) {
-//    while (this.lock == true) {
-//      console.log('---- locked');
-//    };
+module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
+  with ({lock: this.lock, evaluateEvent: this.evaluateEvent}) {
+    require('timers').setInterval(function(isLocked) {
+      if (isLocked == false) {
+        lock = true;
+        evaluateEvent(event, once, eventArgs);
+        lock = false;
+      }
+    }, 1, lock);
   }
-  
-  this.lock = true;
-  
+  while (this.lock == true) {
+    console.log('---- locked');
+  };
+};
+
+
+module.exports.evaluateEvent = function(event, once, eventArgs) {
   this.hasFired[event] = true;
-  
+
   // add args to stored arguments by name
   this.argumentStore[event] = eventArgs;
   var i = 0;
@@ -134,11 +142,11 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
     this.argumentStore[event][this.argumentRegistry[event][arg]] = eventArgs[i];
     i++;
   }
-  
+
   for (key in this.eventTable[event]) {
     var allFired = true;
     var toDelete = [];
-    
+
     // check to see whether all relevant events have fired
     for (evt in this.entries[key].events) {
       if (!this.hasFired[this.entries[key].events[evt]]) {
@@ -146,7 +154,7 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
         break;
       }
     }
-    
+
     if (allFired) {
       // build the list of arguments for all registered event callbacks
       var args = {};
@@ -154,7 +162,7 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
         var eventName = this.entries[key].events[evt];
         args[eventName] = this.argumentStore[eventName];
       }
-      
+
       // execute the callback
       console.log('>>> KEY', key);
       require('inspect')(this.entries);
@@ -164,7 +172,7 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
       console.log('>>> KEY AFTER', key);
       require('inspect')(this.entries);
       console.log('>>> (EVENT)', event);
-      
+
       // delete entry if it's a "once" event
       if (this.entries[key].once) {
         for (i in this.entries[key].events) {
@@ -175,6 +183,4 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
       }
     }
   }
-  
-  this.lock = false;
-};
+}
