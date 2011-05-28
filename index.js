@@ -48,7 +48,8 @@ module.exports.onSeveral = function(events, callback, once) {
     if (!this.eventTable[events[i]]) {
       fn = (function(event, once) {
         return function() {
-          this.obtainEvaluateEventLock(event, once, arguments);
+          this.obtainLockAndCall(this.evaluateEvent, event, once, arguments);
+          //this.obtainEvaluateEventLock(event, once, arguments);
         };
       })(events[i], once);
       
@@ -78,17 +79,22 @@ module.exports.onceSeveral = function(events, callback) {
  * remove multi-listeners added with onSeveral/onceSeveral.
  */
 module.exports.vanGogh = function(keys) {
-  if (typeof events != 'object') {
-    keys = [keys];
-  }
-  
-  for (i in keys) {
-    var key = keys[i];
-    for (x in this.entries[key].events) {
-      var event = this.entries[key].events[x];
-      this.removeListener(event, this.eventTable[event][key]);
+  this.obtainLockAndCall(function(keys) {
+    if (typeof keys == 'undefined') {
+      for
     }
-  }
+    else if (typeof keys != 'object') {
+      keys = [keys];
+    }
+
+    for (i in keys) {
+      var key = keys[i];
+      for (x in this.entries[key].events) {
+        var event = this.entries[key].events[x];
+        this.removeListener(event, this.eventTable[event][key]);
+      }
+    }
+  }, keys);
 };
 
 /**
@@ -111,11 +117,23 @@ module.exports.resetEvents = function(events) {
   }
 };
 
-/**
- * evaluateEvent()
- *
- * this is called by switchboard when any of the registered events is fired.
- */
+module.exports.obtainLockAndCall = function(callback) {
+  var args = arguments.slice(1);
+  
+  with ({theModule: this, args: args}) {
+    var t = require('timers');
+    t.setInterval(
+      function() {
+        if (theModule.lock == false) {
+          theModule.lock = true;
+          callback.apply(theModule, args);
+          theModule.lock = false;
+          t.clearInterval(this);
+        }
+      }, 10);
+  }
+};
+
 module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
   with ({theModule: this}) {
     var t = require('timers');
@@ -131,7 +149,11 @@ module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
   }
 };
 
-
+/**
+ * evaluateEvent()
+ *
+ * this is called by switchboard when any of the registered events is fired.
+ */
 module.exports.evaluateEvent = function(event, once, eventArgs) {
 //  console.log('evaluating event', event);
   this.hasFired[event] = true;
