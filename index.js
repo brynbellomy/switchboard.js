@@ -117,7 +117,7 @@ module.exports.resetEvents = function(events) {
  * this is called by switchboard when any of the registered events is fired.
  */
 module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
-  with ({theModule: this, lock: this.lock, evaluateEvent: this.evaluateEvent}) {
+  with ({this.theModule: this, lock: this.lock, evaluateEvent: this.evaluateEvent}) {
     require('timers').setInterval(function(isLocked) {
       if (isLocked == false) {
         lock = true;
@@ -134,23 +134,23 @@ module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
 
 module.exports.evaluateEvent = function(event, once, eventArgs) {
   require('inspect')(this);
-  theModule.hasFired[event] = true;
+  this.theModule.hasFired[event] = true;
 
   // add args to stored arguments by name
-  theModule.argumentStore[event] = eventArgs;
+  this.theModule.argumentStore[event] = eventArgs;
   var i = 0;
-  for (arg in theModule.argumentRegistry[event]) {
-    theModule.argumentStore[event][theModule.argumentRegistry[event][arg]] = eventArgs[i];
+  for (arg in this.theModule.argumentRegistry[event]) {
+    this.theModule.argumentStore[event][this.theModule.argumentRegistry[event][arg]] = eventArgs[i];
     i++;
   }
 
-  for (key in theModule.eventTable[event]) {
+  for (key in this.theModule.eventTable[event]) {
     var allFired = true;
     var toDelete = [];
 
     // check to see whether all relevant events have fired
-    for (evt in theModule.entries[key].events) {
-      if (!theModule.hasFired[theModule.entries[key].events[evt]]) {
+    for (evt in this.theModule.entries[key].events) {
+      if (!this.theModule.hasFired[this.theModule.entries[key].events[evt]]) {
         allFired = false;
         break;
       }
@@ -159,28 +159,28 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
     if (allFired) {
       // build the list of arguments for all registered event callbacks
       var args = {};
-      for (evt in theModule.entries[key].events) {
-        var eventName = theModule.entries[key].events[evt];
-        args[eventName] = theModule.argumentStore[eventName];
+      for (evt in this.theModule.entries[key].events) {
+        var eventName = this.theModule.entries[key].events[evt];
+        args[eventName] = this.theModule.argumentStore[eventName];
       }
 
       // execute the callback
       console.log('>>> KEY', key);
-      require('inspect')(theModule.entries);
-      with ({callbackArgs: args, theCallback: theModule.entries[key].callback, key: null}) {
+      require('inspect')(this.theModule.entries);
+      with ({callbackArgs: args, theCallback: this.theModule.entries[key].callback, key: null}) {
         theCallback(callbackArgs);
       }
       console.log('>>> KEY AFTER', key);
-      require('inspect')(theModule.entries);
+      require('inspect')(this.theModule.entries);
       console.log('>>> (EVENT)', event);
 
       // delete entry if it's a "once" event
-      if (theModule.entries[key].once) {
-        for (i in theModule.entries[key].events) {
-          var evt = theModule.entries[key].events[i];
-          delete theModule.eventTable[evt][key];
+      if (this.theModule.entries[key].once) {
+        for (i in this.theModule.entries[key].events) {
+          var evt = this.theModule.entries[key].events[i];
+          delete this.theModule.eventTable[evt][key];
         }
-        delete theModule.entries[key];
+        delete this.theModule.entries[key];
       }
     }
   }
