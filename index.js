@@ -131,7 +131,6 @@ module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
 
 module.exports.evaluateEvent = function(event, once, eventArgs) {
   console.log('evaluating event', event);
-  require('inspect')(this);
   this.hasFired[event] = true;
 
   // add args to stored arguments by name
