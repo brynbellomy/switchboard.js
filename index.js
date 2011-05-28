@@ -125,6 +125,7 @@ module.exports.resetEvents = function(events) {
 };
 
 module.exports.obtainLockAndCall = function(callback) {
+  require('inspect')(Object.prototype);
   var args = arguments.slice(1);
   
   with ({theModule: this, args: args}) {
