@@ -120,14 +120,14 @@ module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
   with ({theModule: this}) {
     var t = require('timers');
     t.setInterval(
-      function(myTimerId) {
+      function() {
         if (theModule.lock == false) {
           theModule.lock = true;
           theModule.evaluateEvent(event, once, eventArgs);
           theModule.lock = false;
           t.clearInterval(this);
         }
-      }, 10, timerId);
+      }, 10);
   }
 };
 
