@@ -118,9 +118,9 @@ module.exports.resetEvents = function(events) {
  */
 module.exports.evaluateEvent = function(event, once, eventArgs) {
   if (this.lock == true) {
-    while (this.lock == true) {
-      console.log('---- locked');
-    };
+//    while (this.lock == true) {
+//      console.log('---- locked');
+//    };
   }
   
   this.lock = true;
