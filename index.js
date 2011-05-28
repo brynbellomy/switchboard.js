@@ -80,8 +80,15 @@ module.exports.onceSeveral = function(events, callback) {
  */
 module.exports.vanGogh = function(keys) {
   this.obtainLockAndCall(function(keys) {
+    require('inspect')(keys);
     if (typeof keys == 'undefined') {
-      for
+      for (key in this.entries) {
+        for (x in this.entries[key].events) {
+          var event = this.entries[key].events[x];
+          this.removeListener(event, this.eventTable[event][key]);
+        }
+      }
+      return;
     }
     else if (typeof keys != 'object') {
       keys = [keys];
