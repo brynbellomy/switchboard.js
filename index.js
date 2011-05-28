@@ -154,6 +154,7 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
       }
       console.log('>>> KEY AFTER', key);
       require('inspect')(this.entries);
+      console.log('>>> (EVENT)', event);
       
       // delete entry if it's a "once" event
       if (this.entries[key].once) {
