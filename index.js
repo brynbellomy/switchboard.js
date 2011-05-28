@@ -7,6 +7,7 @@ module.exports.eventTable = [];
 module.exports.hasFired = [];
 module.exports.argumentRegistry = [];
 module.exports.argumentStore = [];
+module.exports.lock = false;
 
 /**
  * registerEventArguments()
@@ -116,6 +117,12 @@ module.exports.resetEvents = function(events) {
  * this is called by switchboard when any of the registered events is fired.
  */
 module.exports.evaluateEvent = function(event, once, eventArgs) {
+  if (this.lock == true) {
+    while (this.lock == true) {};
+  }
+  
+  this.lock = true;
+  
   this.hasFired[event] = true;
   
   // add args to stored arguments by name
@@ -166,4 +173,6 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
       }
     }
   }
+  
+  this.lock = false;
 };
