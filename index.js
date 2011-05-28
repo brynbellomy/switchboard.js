@@ -118,13 +118,16 @@ module.exports.resetEvents = function(events) {
  */
 module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
   with ({theModule: this}) {
-    require('timers').setInterval(function() {
-      if (theModule.lock == false) {
-        theModule.lock = true;
-        theModule.evaluateEvent(event, once, eventArgs);
-        theModule.lock = false;
-      }
-    }, 10);
+    var t = require('timers');
+    t.setInterval(
+      function(myTimerId) {
+        if (theModule.lock == false) {
+          theModule.lock = true;
+          theModule.evaluateEvent(event, once, eventArgs);
+          theModule.lock = false;
+          t.clearInterval(this);
+        }
+      }, 10, timerId);
   }
 };
 
