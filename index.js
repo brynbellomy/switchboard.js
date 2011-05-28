@@ -117,14 +117,14 @@ module.exports.resetEvents = function(events) {
  * this is called by switchboard when any of the registered events is fired.
  */
 module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
-  with ({theModule: this, lock: this.lock, evaluateEvent: this.evaluateEvent}) {
-    require('timers').setInterval(function(isLocked) {
-      if (isLocked == false) {
+  with ({theModule: this}) {
+    require('timers').setInterval(function() {
+      if (theModule.lock == false) {
         theModule.lock = true;
         theModule.evaluateEvent(event, once, eventArgs);
         theModule.lock = false;
       }
-    }, 10, lock);
+    }, 10);
   }
 };
 
