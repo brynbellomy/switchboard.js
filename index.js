@@ -152,6 +152,7 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
       with ({callbackArgs: args, theCallback: this.entries[key].callback, key: null}) {
         theCallback(callbackArgs);
       }
+      console.log('>>> KEY AFTER', key);
       require('inspect')(this.entries);
       
       // delete entry if it's a "once" event
