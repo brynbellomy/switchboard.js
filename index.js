@@ -147,7 +147,9 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
       }
       
       // execute the callback
-      (function(args, callback) {callback(args)})(args, this.entries[key].callback); // @@TODO: 'key' gets changed by callback sometimes
+      with ({callbackArgs: args, theCallback: this.entries[key].callback}) {
+        theCallback(callbackArgs);
+      }
       
       // delete entry if it's a "once" event
       if (this.entries[key].once) {
