@@ -133,7 +133,7 @@ module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
 
 
 module.exports.evaluateEvent = function(event, once, eventArgs) {
-  console.log('evaluating event', event);
+//  console.log('evaluating event', event);
   this.hasFired[event] = true;
 
   // add args to stored arguments by name
@@ -165,14 +165,14 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
       }
 
       // execute the callback
-      console.log('>>> KEY', key);
-      require('inspect')(this.entries);
+//      console.log('>>> KEY', key);
+//      require('inspect')(this.entries);
       with ({callbackArgs: args, theCallback: this.entries[key].callback, key: null}) {
         theCallback(callbackArgs);
       }
-      console.log('>>> KEY AFTER', key);
-      require('inspect')(this.entries);
-      console.log('>>> (EVENT)', event);
+//      console.log('>>> KEY AFTER', key);
+//      require('inspect')(this.entries);
+//      console.log('>>> (EVENT)', event);
 
       // delete entry if it's a "once" event
       if (this.entries[key].once) {
