@@ -120,20 +120,17 @@ module.exports.obtainEvaluateEventLock = function(event, once, eventArgs) {
   with ({theModule: this, lock: this.lock, evaluateEvent: this.evaluateEvent}) {
     require('timers').setInterval(function(isLocked) {
       if (isLocked == false) {
-        lock = true;
-        evaluateEvent(event, once, eventArgs);
-        lock = false;
+        this.lock = true;
+        this.evaluateEvent(event, once, eventArgs);
+        this.lock = false;
       }
-    }, 1, lock);
+    }, 10, lock);
   }
-  while (this.lock == true) {
-    console.log('---- locked');
-  };
 };
 
 
 module.exports.evaluateEvent = function(event, once, eventArgs) {
-  require('inspect')(this);
+  console.log('evaluating event', event);
   this.theModule.hasFired[event] = true;
 
   // add args to stored arguments by name
