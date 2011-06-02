@@ -197,7 +197,9 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
 //      console.log('>>> KEY', key);
 //      require('inspect')(this.entries);
 //      with ({callbackArgs: args, theCallback: this.entries[key].callback, key: null}) {
+        console.log('=====================');
         require('inspect')(this.entries);
+        console.log('======================');
 //        theCallback(callbackArgs);
         this.entries[key].callback(args);
 //      }
