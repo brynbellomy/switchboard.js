@@ -48,9 +48,6 @@ module.exports.onSeveral = function(events, callback, once) {
     if (!this.eventTable[events[i]]) {
       fn = (function(event, once) {
         return function() {
-          console.log('switchboard this');
-          require('inspect')(this);
-          console.log('================');
           this.obtainLockAndCall(this.evaluateEvent, event, once, arguments);
           //this.obtainEvaluateEventLock(event, once, arguments);
         };
@@ -200,6 +197,7 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
 //      console.log('>>> KEY', key);
 //      require('inspect')(this.entries);
       with ({callbackArgs: args, theCallback: this.entries[key].callback, key: null}) {
+        require('inspect')(this);
         theCallback(callbackArgs);
       }
 //      console.log('>>> KEY AFTER', key);
