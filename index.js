@@ -194,18 +194,7 @@ module.exports.evaluateEvent = function(event, once, eventArgs) {
       }
 
       // execute the callback
-//      console.log('>>> KEY', key);
-//      require('inspect')(this.entries);
-//      with ({callbackArgs: args, theCallback: this.entries[key].callback, key: null}) {
-        console.log('=====================');
-        require('inspect')(this.entries);
-        console.log('======================');
-//        theCallback(callbackArgs);
-        this.entries[key].callback(args);
-//      }
-//      console.log('>>> KEY AFTER', key);
-//      require('inspect')(this.entries);
-//      console.log('>>> (EVENT)', event);
+      this.entries[key].callback(args);
 
       // delete entry if it's a "once" event
       if (this.entries[key].once) {
