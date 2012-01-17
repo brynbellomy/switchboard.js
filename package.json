@@ -1,7 +1,7 @@
 {   "name": "switchboard"
-  , "description": "Dependency chains for events"
-  , "version": "0.0.1"
-  , "author": "Bryn Austin Bellomy <bryn.bellomy@gmail.com>"
+  , "description": "Composite (i.e. multiple) event emitter/handler."
+  , "version": "0.1.0"
+  , "author": "Bryn Austin Bellomy <bryn@signals.io>"
   , "main": "index"
-  , "engines": { "node": ">= 0.2.0" }
+  , "engines": { "node": "~0.6.6" }
 }
