@@ -1,4 +1,4 @@
-# SWITCHBOARD
+# // switchboard
 
 A composite event listener.  Waits for several events to occur before firing the handler.
 
