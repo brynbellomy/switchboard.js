@@ -1,7 +1,18 @@
-{   "name": "switchboard"
-  , "description": "Composite (i.e. multiple) event emitter/handler."
-  , "version": "0.1.0"
-  , "author": "Bryn Austin Bellomy <bryn@signals.io>"
-  , "main": "index"
-  , "engines": { "node": "~0.6.6" }
+{
+  "author": "bryn austin bellomy <bryn@signals.io> (http://signals.io)",
+  "name": "switchboard",
+  "description": "Event listener for node.js for composite events (i.e., will not trigger until several specified events occur).",
+  "version": "0.1.1",
+  "homepage": "http://github.com/brynbellomy/node-switchboard",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brynbellomy/node-switchboard.git"
+  },
+  "main": "./index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
 }
