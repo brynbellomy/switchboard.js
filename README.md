@@ -18,12 +18,6 @@ bower:
 bower install switchboard
 ```
 
-component:
-
-```sh
-component install brynbellomy/switchboard
-```
-
 ## Why do I need this?
 
 Sometimes you have to wait for 2 or more things to happen before a certain part

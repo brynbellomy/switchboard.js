@@ -1,0 +1,17 @@
+{
+  "name": "switchboard",
+  "version": "1.2.0",
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brynbellomy/switchboard.js.git"
+  },
+  "repo": "brynbellomy/switchboard.js",
+  "scripts": [
+    "./index.js"
+  ],
+  "dependencies": {
+    "node-uuid": "git://github.com/broofa/node-uuid.git",
+    "eventemitter2": "git://github.com/hij1nx/EventEmitter2.git"
+  }
+}
