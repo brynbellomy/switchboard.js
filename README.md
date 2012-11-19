@@ -1,16 +1,24 @@
-# // switchboard
+# // switchboard.js
 
 A composite event listener.  Waits for several events to occur before firing the handler.
 
 Switchboard returns the arguments of each respective `emit` to the specified handler.  These arguments can be named if desired.
 
+## Installing
+
+node:
+
+```sh
+npm install switchboard
+```
+
 ## Why do I need this?
 
 Sometimes you have to wait for 2 or more things to happen before a certain part
-of your program can move forward.  Let's say you're rendering a bunch of view
-partials, for example.  You want to do it asynchronously, but it's kind of a
+of your program can move forward.  Let's say you're rendering a bunch of
+templates, for example.  You want to do it asynchronously, but it's kind of a
 pain to figure out when everything's done without something kludgey (like a
-static counter or a jungle of if statements).  Let Switchboard hide the
+static counter or a jungle of if statements).  **switchboard.js** can hide the
 kludge for you.
 
 Familiar syntax, too.  Just uses the classic EventEmitter 'on/once' pattern.
@@ -23,7 +31,8 @@ You've got two choices, cowboy.
 ### 1. Extremely simple way
 
 ```javascript
-var switchboard = require('switchboard');
+var Switchboard = require('switchboard'),
+    myEmitter   = new Switchboard();
 
 var events = [
   'firstEvent',
@@ -31,8 +40,13 @@ var events = [
   'thirdEvent'
 ];
 
-switchboard.onceSeveral(events, function(args) {
-  console.log(args)
+myEmitter.on(events, function(args) {
+  // args is something like:
+  // { 'firstEvent':  [ ... the args ... ],
+  //   'secondEvent': [ ... the args ... ],
+  //   ...
+  // }
+  // etc.
 });
 ```
 
@@ -48,18 +62,18 @@ var events = [
 ];
 
 switchboard.registerEventArguments({
-  'firstEvent': ['err', 'resultA', 'resultB']
+  firstEvent: ['err', 'resultA', 'resultB']
 });
 
 // multiple calls to registerEventArguments are a-okay
 // (hint: good for loops or for registering callbacks from
 // within other callbacks)
 switchboard.registerEventArguments({
-  'secondEvent': ['resultC', 'resultD', 'resultE'],
-  'thirdEvent': ['err', 'myVar', 'someJunk']
+  secondEvent: ['resultC', 'resultD', 'resultE'],
+  thirdEvent:  ['err', 'myVar', 'someJunk']
 });
 
-switchboard.onceSeveral(events, function(args) {
+switchboard.once(events, function(args) {
   console.log(args)
 });
 ```
