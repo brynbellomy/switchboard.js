@@ -6,10 +6,22 @@ Switchboard returns the arguments of each respective `emit` to the specified han
 
 ## Installing
 
-node:
+node.js:
 
 ```sh
 npm install switchboard
+```
+
+bower:
+
+```sh
+bower install switchboard
+```
+
+component:
+
+```sh
+component install brynbellomy/switchboard
 ```
 
 ## Why do I need this?

@@ -6,7 +6,12 @@
     "type": "git",
     "url": "git://github.com/brynbellomy/switchboard.js.git"
   },
+  "repo": "brynbellomy/switchboard.js",
+  "scripts": [
+    "./index.js"
+  ],
   "dependencies": {
-    "node-uuid": "latest"
+    "node-uuid": "latest",
+    "eventemitter2": "git://github.com/hij1nx/EventEmitter2.git"
   }
 }
