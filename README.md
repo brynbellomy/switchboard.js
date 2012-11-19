@@ -15,7 +15,11 @@ npm install switchboard
 bower:
 
 ```sh
-bower install switchboard
+bower install switchboardjs
+```
+
+```html
+<script src="components/switchboardjs/index.js"></script>
 ```
 
 ## Why do I need this?

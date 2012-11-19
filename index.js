@@ -274,6 +274,6 @@
 
   })(EventEmitter2);
 
-  exports.Switchboard = Switchboard;
+  (typeof exports !== "undefined" && exports !== null ? exports : window).Switchboard = Switchboard;
 
 }).call(this);

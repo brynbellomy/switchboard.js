@@ -182,5 +182,6 @@ class Switchboard extends EventEmitter2
                     @destroyHandler( handler )
 
 
-exports.Switchboard = Switchboard
+
+(exports ? window).Switchboard = Switchboard
 
