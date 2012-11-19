@@ -11,7 +11,7 @@
     "./index.js"
   ],
   "dependencies": {
-    "node-uuid": "latest",
+    "node-uuid": "git://github.com/broofa/node-uuid.git",
     "eventemitter2": "git://github.com/hij1nx/EventEmitter2.git"
   }
 }
