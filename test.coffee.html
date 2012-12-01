@@ -1,0 +1,49 @@
+<!DOCTYPE html><html><head><title>test.coffee</title><meta http-equiv="content-type" content="text/html; charset=UTF-8"><link rel="stylesheet" media="all" href="doc-style.css"><script src="doc-filelist.js"></script><script>var relativeDir = '', thisFile = '/Users/bryn/.otis/templates/tmpl.jade', defaultSidebar = true;</script><script src="doc-script.js"></script></head><body><div id="sidebar_wrapper"><div id="sidebar_switch"><span class="tree">Files</span><span class="headings">Headings</span></div><div id="tree"></div><div id="headings"></div></div><div id="sidebar-toggle"></div><div id="container"><div class="background highlight"></div><table cellpadding="0" cellspacing="0"><tbody><tr><td class="docs"></td><td class="code highlight"></td></tr><tr><td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+</td><td class="code highlight"><div class="highlight"><pre><span class="nv">assert = </span><span class="nx">require</span> <span class="s">&#39;assert&#39;</span>
+<span class="p">{</span><span class="nx">Switchboard</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span> <span class="s">&#39;../&#39;</span>
+
+<span class="nx">describe</span> <span class="s">&#39;switchboard&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">timeout</span> <span class="mi">1000</span>
+
+    <span class="nx">describe</span> <span class="s">&#39;multi-event handlers&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+
+        <span class="nx">it</span> <span class="s">&#39;should not trigger handlers unless all events have occurred&#39;</span><span class="p">,</span> <span class="nf">(done) -&gt;</span>
+            <span class="nv">the_switchboard = </span><span class="k">new</span> <span class="nx">Switchboard</span><span class="p">()</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">on</span> <span class="p">[</span><span class="s">&#39;event1&#39;</span><span class="p">,</span> <span class="s">&#39;event2&#39;</span><span class="p">],</span> <span class="nf">(data) -&gt;</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;should not have triggered&#39;</span>
+
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">emit</span> <span class="s">&#39;event1&#39;</span>
+            <span class="nx">setTimeout</span> <span class="p">(</span><span class="nf">-&gt;</span> <span class="nx">done</span><span class="p">()),</span> <span class="mi">10</span>
+
+        <span class="nx">it</span> <span class="s">&#39;should trigger handlers after all events have been emitted&#39;</span><span class="p">,</span> <span class="nf">(done) -&gt;</span>
+            <span class="nv">the_switchboard = </span><span class="k">new</span> <span class="nx">Switchboard</span><span class="p">()</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">on</span> <span class="p">[</span><span class="s">&#39;event1&#39;</span><span class="p">,</span> <span class="s">&#39;event2&#39;</span><span class="p">],</span> <span class="nf">(data) -&gt;</span> <span class="nx">done</span><span class="p">()</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">emit</span> <span class="s">&#39;event1&#39;</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">emit</span> <span class="s">&#39;event2&#39;</span>
+
+        <span class="nx">it</span> <span class="s">&#39;should continue to trigger handlers on every matching event after all events have been emitted&#39;</span><span class="p">,</span> <span class="nf">(done) -&gt;</span>
+            <span class="nv">the_switchboard = </span><span class="k">new</span> <span class="nx">Switchboard</span><span class="p">()</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">on</span> <span class="p">[</span><span class="s">&#39;event1&#39;</span><span class="p">,</span> <span class="s">&#39;event2&#39;</span><span class="p">],</span> <span class="nf">(data) -&gt;</span>
+                <span class="k">if</span> <span class="nx">triggeredAgainOnce</span> <span class="o">and</span> <span class="nx">triggeredAgainTwice</span> <span class="k">then</span> <span class="nx">done</span><span class="p">()</span>
+
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">emit</span> <span class="s">&#39;event1&#39;</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">emit</span> <span class="s">&#39;event2&#39;</span>
+            <span class="nv">triggeredAgainOnce = </span><span class="kc">yes</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">emit</span> <span class="s">&#39;event2&#39;</span>
+            <span class="nv">triggeredAgainTwice = </span><span class="kc">yes</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">emit</span> <span class="s">&#39;event1&#39;</span>
+
+        <span class="nx">it</span> <span class="s">&#39;should not trigger handlers after a call to .vanGogh()&#39;</span><span class="p">,</span> <span class="nf">(done) -&gt;</span>
+            <span class="nv">the_switchboard = </span><span class="k">new</span> <span class="nx">Switchboard</span><span class="p">()</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">on</span> <span class="p">[</span><span class="s">&#39;event1&#39;</span><span class="p">,</span> <span class="s">&#39;event2&#39;</span><span class="p">],</span> <span class="nf">(data) -&gt;</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;should not have triggered&#39;</span>
+
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">emit</span> <span class="s">&#39;event1&#39;</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">vanGogh</span><span class="p">()</span>
+            <span class="nx">the_switchboard</span><span class="p">.</span><span class="nx">emit</span> <span class="s">&#39;event2&#39;</span>
+
+            <span class="nx">setTimeout</span> <span class="p">(</span><span class="nf">-&gt;</span> <span class="nx">done</span><span class="p">()),</span> <span class="mi">10</span>
+</pre></div></td></tr></tbody></table></div></body></html>

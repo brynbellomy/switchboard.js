@@ -1,0 +1,218 @@
+<!DOCTYPE html><html><head><title>index.coffee</title><meta http-equiv="content-type" content="text/html; charset=UTF-8"><link rel="stylesheet" media="all" href="doc-style.css"><script src="doc-filelist.js"></script><script>var relativeDir = '', thisFile = '/Users/bryn/.otis/templates/tmpl.jade', defaultSidebar = true;</script><script src="doc-script.js"></script></head><body><div id="sidebar_wrapper"><div id="sidebar_switch"><span class="tree">Files</span><span class="headings">Headings</span></div><div id="tree"></div><div id="headings"><div class="heading h1"><a href="#---switchboard.js">// switchboard.js</a></div><div class="heading h1"><a href="#class-switchboard">class Switchboard</a></div><div class="heading h2"><a href="#public-instance-methods">Public instance methods</a></div><div class="heading h3"><a href="#registereventarguments">registerEventArguments</a></div><div class="heading h3"><a href="#on">on</a></div><div class="heading h3"><a href="#once">once</a></div><div class="heading h3"><a href="#vangogh">vanGogh</a></div><div class="heading h3"><a href="#resetevents">resetEvents</a></div><div class="heading h2"><a href="#private-utility-methods">Private utility methods</a></div></div></div><div id="sidebar-toggle"></div><div id="container"><div class="background highlight"></div><table cellpadding="0" cellspacing="0"><tbody><tr><td class="docs">
+<div class="pilwrap" id="---switchboard.js">
+  <h1>
+    <a href="#---switchboard.js" class="pilcrow">&#182;</a>
+    // switchboard.js
+  </h1>
+</div>
+
+
+<p>bryn austin bellomy &lt; <a href="&#109;&#x61;i&#108;&#116;&#111;:&#x62;&#114;&#x79;&#110;&#x2E;&#98;&#101;&#108;&#108;&#x6F;&#x6D;&#x79;&#64;&#103;&#x6D;&#x61;i&#x6C;&#46;&#99;&#x6F;&#x6D;">&#x62;&#114;&#x79;&#110;&#x2E;&#98;&#101;&#108;&#108;&#x6F;&#x6D;&#x79;&#64;&#103;&#x6D;&#x61;i&#x6C;&#46;&#99;&#x6F;&#x6D;</a> ></p></td><td class="code highlight"><div class="highlight"><pre><span class="nv">EventEmitter2 = </span><span class="kc">undefined</span>
+<span class="nv">EventEmitter = </span><span class="kc">undefined</span>
+<span class="nv">Emitter = </span><span class="kc">undefined</span>
+<span class="nv">nodeUUID = </span><span class="kc">undefined</span>
+
+
+<span class="k">if</span> <span class="nb">window</span><span class="o">?</span>
+    <span class="p">{</span><span class="nx">EventEmitter2</span><span class="p">,</span> <span class="nx">EventEmitter</span><span class="p">,</span> <span class="nx">Emitter</span><span class="p">,</span> <span class="nx">uuid</span><span class="p">}</span> <span class="o">=</span> <span class="nb">window</span>
+
+<span class="k">else</span> <span class="k">if</span> <span class="nx">require</span><span class="o">?</span>
+    <span class="k">try</span> <span class="p">{</span><span class="nx">EventEmitter2</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span> <span class="s">&#39;eventemitter2&#39;</span>
+    <span class="k">catch</span> <span class="nx">err</span>
+        <span class="p">{</span><span class="nx">EventEmitter</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span> <span class="s">&#39;events&#39;</span>
+    <span class="nv">nodeUUID = </span><span class="nx">require</span> <span class="s">&#39;node-uuid&#39;</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap" id="class-switchboard">
+  <h1>
+    <a href="#class-switchboard" class="pilcrow">&#182;</a>
+    class Switchboard
+  </h1>
+</div>
+</td><td class="code highlight"><div class="highlight"><pre><span class="k">class</span> <span class="nx">exports</span><span class="p">.</span><span class="nx">Switchboard</span> <span class="k">extends</span> <span class="p">(</span><span class="nx">EventEmitter2</span> <span class="o">?</span> <span class="nx">EventEmitter</span> <span class="o">?</span> <span class="nx">Emitter</span><span class="p">)</span>
+
+    <span class="nv">constructor: </span><span class="p">()</span> <span class="nf">-&gt;</span>
+        <span class="vi">@_globalEventHandlers = </span><span class="p">{}</span>
+        <span class="vi">@_hasFired = </span><span class="p">{}</span>
+        <span class="vi">@_entries = </span><span class="p">{}</span>
+        <span class="vi">@_argumentNames = </span><span class="p">{}</span>
+        <span class="vi">@_firedEventArgumentStore = </span><span class="p">{}</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap" id="public-instance-methods">
+  <h2>
+    <a href="#public-instance-methods" class="pilcrow">&#182;</a>
+    Public instance methods
+  </h2>
+</div>
+</td><td class="code highlight"><div class="highlight"><pre></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap" id="registereventarguments">
+  <h3>
+    <a href="#registereventarguments" class="pilcrow">&#182;</a>
+    registerEventArguments
+  </h3>
+</div>
+
+
+<p>registers the names of the arguments passed to each respective event
+callback so that they can be referred to by name.  not required to use
+switchboard functionality.</p></td><td class="code highlight"><div class="highlight"><pre>    <span class="nv">registerEventArguments: </span><span class="nf">(events) =&gt;</span>
+        <span class="nx">@_argumentNames</span><span class="p">[</span><span class="nx">event</span><span class="p">]</span> <span class="o">=</span> <span class="nx">args</span> <span class="k">for</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">args</span> <span class="k">of</span> <span class="nx">events</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap" id="on">
+  <h3>
+    <a href="#on" class="pilcrow">&#182;</a>
+    on
+  </h3>
+</div>
+
+
+<p>registers a callback to be executed only after all listed events have
+occurred.  functions very similarly to <code>EventEmitter.on()</code>.</p></td><td class="code highlight"><div class="highlight"><pre>    <span class="kc">on</span><span class="o">:</span> <span class="nf">(events, callback, once = no) =&gt;</span>
+      <span class="nv">events = </span><span class="p">[</span> <span class="nx">events</span> <span class="p">]</span> <span class="k">unless</span> <span class="nx">events</span> <span class="k">instanceof</span> <span class="nb">Array</span>
+
+      <span class="nv">event_uuid = </span><span class="nx">nodeUUID</span><span class="p">.</span><span class="nx">v4</span><span class="p">()</span>
+
+      <span class="nv">new_entry = </span><span class="nf">(args...) -&gt;</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">args</span><span class="p">...)</span>
+      <span class="nv">new_entry.uuid   = </span><span class="nx">event_uuid</span>
+      <span class="nv">new_entry.events = </span><span class="nx">events</span>
+      <span class="nv">new_entry.once   = </span><span class="nx">once</span>
+      <span class="nx">@_entries</span><span class="p">[</span><span class="nx">event_uuid</span><span class="p">]</span> <span class="o">=</span> <span class="nx">new_entry</span>
+
+      <span class="k">for</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">events</span>
+          <span class="k">unless</span> <span class="nx">@_globalEventHandlers</span><span class="p">[</span><span class="nx">event</span><span class="p">]</span><span class="o">?</span>
+              <span class="nv">handlerFn = </span><span class="nx">do</span> <span class="nf">(event) =&gt;</span> <span class="nf">(args...) =&gt;</span> <span class="nx">@evaluateEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">args</span><span class="p">...)</span>
+
+              <span class="nx">@_globalEventHandlers</span><span class="p">[</span><span class="nx">event</span><span class="p">]</span> <span class="o">=</span> <span class="nx">handlerFn</span>
+
+              <span class="k">if</span> <span class="nx">once</span> <span class="k">then</span> <span class="nx">EventEmitter</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">once</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">handlerFn</span><span class="p">)</span>
+              <span class="k">else</span> <span class="k">super</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">handlerFn</span><span class="p">)</span>
+
+      <span class="k">return</span> <span class="nx">event_uuid</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap" id="once">
+  <h3>
+    <a href="#once" class="pilcrow">&#182;</a>
+    once
+  </h3>
+</div>
+
+
+<p>registers a callback to be executed only after all listed events have
+occurred. the callback will only be executed once, regardless of whether
+the events occur again, the switchboard is reset, etc.  functions very
+similarly to Events.EventEmitter.once().</p></td><td class="code highlight"><div class="highlight"><pre>    <span class="nv">once: </span><span class="nf">(events, callback) =&gt;</span>
+        <span class="nx">@</span><span class="kc">on</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="kc">yes</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap" id="vangogh">
+  <h3>
+    <a href="#vangogh" class="pilcrow">&#182;</a>
+    vanGogh
+  </h3>
+</div>
+
+
+<p>remove multi-listeners added with <code>onSeveral</code>/<code>onceSeveral</code>.</p></td><td class="code highlight"><div class="highlight"><pre>    <span class="nv">vanGogh: </span><span class="nf">(uuids) =&gt;</span>
+        <span class="nv">uuids = </span><span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">@_entries</span><span class="p">)</span> <span class="k">if</span> <span class="o">not</span> <span class="nx">uuids</span><span class="o">?</span>
+        <span class="nv">uuids = </span><span class="p">[</span> <span class="nx">uuids</span> <span class="p">]</span> <span class="k">unless</span> <span class="nx">uuids</span> <span class="k">instanceof</span> <span class="nb">Array</span>
+
+        <span class="nx">@destroyHandler</span><span class="p">(</span><span class="nx">uuid</span><span class="p">)</span> <span class="k">for</span> <span class="nx">uuid</span> <span class="k">in</span> <span class="nx">uuids</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap" id="resetevents">
+  <h3>
+    <a href="#resetevents" class="pilcrow">&#182;</a>
+    resetEvents
+  </h3>
+</div>
+
+
+<p>reset all of the 'event has occurred' flags, either for a single event,
+a list of events, or all events (if no argument is passed).</p></td><td class="code highlight"><div class="highlight"><pre>    <span class="nv">resetEvents: </span><span class="nf">(events) =&gt;</span>
+        <span class="k">if</span> <span class="o">not</span> <span class="nx">events</span><span class="o">?</span>
+            <span class="vi">@_hasFired = </span><span class="p">[]</span>
+        <span class="k">else</span>
+            <span class="nv">events = </span><span class="p">[</span> <span class="nx">events</span> <span class="p">]</span> <span class="k">unless</span> <span class="nx">events</span> <span class="k">instanceof</span> <span class="nb">Array</span>
+            <span class="k">delete</span> <span class="nx">@_hasFired</span><span class="p">[</span><span class="nx">event</span><span class="p">]</span> <span class="k">for</span> <span class="nx">event</span> <span class="k">of</span> <span class="nx">events</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap" id="private-utility-methods">
+  <h2>
+    <a href="#private-utility-methods" class="pilcrow">&#182;</a>
+    Private utility methods
+  </h2>
+</div>
+</td><td class="code highlight"><div class="highlight"><pre>    <span class="nv">evaluateEvent: </span><span class="nf">(eventName, eventArgs) =&gt;</span>
+        <span class="nx">@hasFired</span><span class="p">(</span> <span class="nx">eventName</span><span class="p">,</span> <span class="kc">yes</span> <span class="p">)</span>
+        </pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>add args to stored arguments by name</p></td><td class="code highlight"><div class="highlight"><pre>        <span class="nx">@setArgsForEvent</span><span class="p">(</span> <span class="nx">eventName</span><span class="p">,</span> <span class="nx">eventArgs</span> <span class="p">)</span>
+
+        <span class="nv">possibleHandlers = </span><span class="nx">@possibleHandlersForSingleEvent</span><span class="p">(</span> <span class="nx">eventName</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="nx">handler</span> <span class="k">in</span> <span class="nx">possibleHandlers</span>
+            <span class="k">if</span> <span class="nx">@hasFired</span><span class="p">(</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">events</span> <span class="p">)</span> <span class="o">is</span> <span class="kc">yes</span>
+                <span class="nv">args = </span><span class="nx">@getArgsForEvents</span><span class="p">(</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">events</span> <span class="p">)</span>
+                <span class="nx">handler</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">once</span> <span class="o">is</span> <span class="kc">yes</span>
+                    <span class="nx">@destroyHandler</span><span class="p">(</span> <span class="nx">handler</span> <span class="p">)</span>
+
+
+
+    <span class="nv">hasFired: </span><span class="nf">(eventNames, val) =&gt;</span>
+        <span class="nv">eventNames = </span><span class="p">[</span> <span class="nx">eventNames</span> <span class="p">]</span> <span class="k">unless</span> <span class="nx">eventNames</span> <span class="k">instanceof</span> <span class="nb">Array</span>
+        <span class="nv">allFired   = </span><span class="kc">yes</span>
+
+        <span class="k">for</span> <span class="nx">eventName</span> <span class="k">in</span> <span class="nx">eventNames</span>
+            <span class="k">if</span> <span class="nx">val</span><span class="o">?</span>
+                <span class="nx">@_hasFired</span><span class="p">[</span><span class="nx">eventName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">val</span>
+            <span class="k">else</span> <span class="k">unless</span> <span class="nx">@_hasFired</span><span class="p">[</span><span class="nx">eventName</span><span class="p">]</span> <span class="o">is</span> <span class="kc">yes</span>
+                <span class="nv">allFired = </span><span class="kc">no</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="nx">allFired</span>
+
+    <span class="nv">setNamedArgsForEvent: </span><span class="nf">(eventName, eventArgs) =&gt;</span>
+        <span class="nx">@_firedEventArgumentStore</span><span class="p">[</span><span class="nx">eventName</span><span class="p">][</span><span class="nx">argName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">eventArgs</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="k">for</span> <span class="nx">argName</span><span class="p">,</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">@_argumentNames</span><span class="p">[</span><span class="nx">eventName</span><span class="p">]</span>
+
+    <span class="nv">setUnnamedArgsForEvent: </span><span class="nf">(eventName, eventArgs) =&gt;</span>
+        <span class="nx">@_firedEventArgumentStore</span><span class="p">[</span><span class="nx">eventName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">eventArgs</span>
+
+    <span class="nv">setArgsForEvent: </span><span class="nf">(eventName, eventArgs) =&gt;</span>
+        <span class="k">if</span> <span class="nx">@_argumentNames</span><span class="p">[</span><span class="nx">eventName</span><span class="p">]</span><span class="o">?</span>
+            <span class="nx">@setNamedArgsForEvent</span><span class="p">(</span><span class="nx">eventName</span><span class="p">,</span> <span class="nx">argName</span><span class="p">,</span> <span class="nx">eventArgs</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+        <span class="k">else</span>
+            <span class="nx">@setUnnamedArgsForEvent</span><span class="p">(</span><span class="nx">eventName</span><span class="p">,</span> <span class="nx">eventArgs</span><span class="p">)</span>
+
+    <span class="nv">possibleHandlersForSingleEvent: </span><span class="nf">(event) =&gt;</span>
+        <span class="nv">handlers = </span><span class="p">[]</span>
+        <span class="k">for</span> <span class="nx">uuid</span><span class="p">,</span> <span class="nx">handler</span> <span class="k">of</span> <span class="nx">@_entries</span>
+            <span class="k">if</span> <span class="nx">event</span> <span class="k">in</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">events</span> <span class="k">then</span> <span class="nx">handlers</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">handler</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nx">handlers</span>
+
+
+    <span class="nv">getArgsForEvents: </span><span class="nf">(events) =&gt;</span>
+        <span class="nv">args = </span><span class="p">{}</span>
+        <span class="nx">args</span><span class="p">[</span><span class="nx">event</span><span class="p">]</span> <span class="o">=</span> <span class="nx">@_firedEventArgumentStore</span><span class="p">[</span><span class="nx">event</span><span class="p">]</span> <span class="k">for</span> <span class="nx">event</span> <span class="k">in</span> <span class="nx">events</span>
+        <span class="k">return</span> <span class="nx">args</span>
+
+    <span class="nv">destroyHandler: </span><span class="nf">(fnOrUUID) =&gt;</span>
+        <span class="nv">handler = </span><span class="nx">fnOrUUID</span>
+
+        <span class="k">if</span> <span class="k">typeof</span> <span class="nx">fnOrUUID</span> <span class="o">is</span> <span class="s">&#39;string&#39;</span>
+            <span class="nv">handler = </span><span class="nx">@_entries</span><span class="p">[</span><span class="nx">fnOrUUID</span><span class="p">]</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<p>determine which events to remove our global listeners for</p></td><td class="code highlight"><div class="highlight"><pre>        <span class="nv">eventsToUnlisten = </span><span class="nx">handler</span><span class="p">.</span><span class="nx">events</span>
+        <span class="k">for</span> <span class="nx">uuid</span><span class="p">,</span> <span class="nx">handler</span> <span class="k">of</span> <span class="nx">@_entries</span>
+            <span class="k">for</span> <span class="nx">event</span> <span class="k">in</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">events</span>
+                <span class="k">if</span> <span class="nx">event</span> <span class="k">in</span> <span class="nx">eventsToUnlisten</span>
+                    <span class="nv">eventsToUnlisten = </span><span class="nx">eventsToUnlisten</span><span class="p">.</span><span class="nx">filter</span> <span class="nf">(item) -&gt;</span> <span class="nx">item</span> <span class="o">isnt</span> <span class="nx">event</span>
+
+                <span class="k">break</span> <span class="k">if</span> <span class="nx">eventsToUnlisten</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span>
+            <span class="k">break</span> <span class="k">if</span> <span class="nx">eventsToUnlisten</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
+</div>
+<p>now remove those events</p></td><td class="code highlight"><div class="highlight"><pre>        <span class="nx">@removeListener</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">@_globalEventHandlers</span><span class="p">[</span><span class="nx">event</span><span class="p">])</span> <span class="k">for</span> <span class="nx">event</span> <span class="k">in</span> <span class="nx">eventsToUnlisten</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13">&#182;</a>
+</div>
+<p>destroy the handler</p></td><td class="code highlight"><div class="highlight"><pre>        <span class="k">delete</span> <span class="nx">@_entries</span><span class="p">[</span><span class="nx">handler</span><span class="p">.</span><span class="nx">uuid</span><span class="p">]</span></pre></div></td></tr><tr><td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14">&#182;</a>
+</div>
+<p>(exports ? window).Switchboard = Switchboard</p></td><td class="code highlight"><div class="highlight"><pre></pre></div></td></tr></tbody></table></div></body></html>
