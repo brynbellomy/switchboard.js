@@ -41,17 +41,13 @@ You've got two choices, cowboy.
 ### 1. Extremely simple way
 
 ```javascript
-var Switchboard = require('switchboard'),
+var Switchboard = require('switchboard').Switchboard,
     myEmitter   = new Switchboard();
 
-var events = [
-  'firstEvent',
-  'secondEvent',
-  'thirdEvent'
-];
+var events = ['firstEvent', 'secondEvent', 'thirdEvent'];
 
 myEmitter.on(events, function(args) {
-  // args is something like:
+  // after calling `myEmitter.emit(e)` for all three events, args is something like:
   // { 'firstEvent':  [ ... the args ... ],
   //   'secondEvent': [ ... the args ... ],
   //   ...
@@ -63,27 +59,24 @@ myEmitter.on(events, function(args) {
 ### 2. With a little bit more code, you get your results returned in a dictionary!
 
 ```javascript
-var switchboard = require('switchboard');
+var Switchboard = require('switchboard').Switchboard,
+    myEmitter   = new Switchboard();
 
-var events = [
-  'firstEvent',
-  'secondEvent',
-  'thirdEvent'
-];
+var events = ['firstEvent', 'secondEvent', 'thirdEvent'];
 
-switchboard.registerEventArguments({
+myEmitter.registerEventArguments({
   firstEvent: ['err', 'resultA', 'resultB']
 });
 
 // multiple calls to registerEventArguments are a-okay
 // (hint: good for loops or for registering callbacks from
 // within other callbacks)
-switchboard.registerEventArguments({
+myEmitter.registerEventArguments({
   secondEvent: ['resultC', 'resultD', 'resultE'],
   thirdEvent:  ['err', 'myVar', 'someJunk']
 });
 
-switchboard.once(events, function(args) {
+myEmitter.once(events, function(args) {
   console.log(args)
 });
 ```
@@ -91,9 +84,9 @@ switchboard.once(events, function(args) {
 Now that you've defined your events, you can go ahead and emit things...
 
 ```javascript
-switchboard.emit('firstEvent', null, 'aaaa', 'bbbbb')
-switchboard.emit('thirdEvent', {err: 'someErr'}, 'mvvvarrr', 'junk~!')
-switchboard.emit('secondEvent', 'CCCC', 222222, 'EEEE')
+myEmitter.emit('firstEvent', null, 'aaaa', 'bbbbb')
+myEmitter.emit('thirdEvent', {err: 'someErr'}, 'mvvvarrr', 'junk~!')
+myEmitter.emit('secondEvent', 'CCCC', 222222, 'EEEE')
 ```
 
 Which will produce the following output:

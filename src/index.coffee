@@ -1,117 +1,85 @@
-{EventEmitter2} = require 'eventemitter2'
-uuid = require 'node-uuid'
+#
+# # // switchboard.js
+#
+# bryn austin bellomy < <bryn.bellomy@gmail.com> >
+#
 
-class Switchboard extends EventEmitter2
-    entries: {}
-    _globalEventHandlers: {}
-    _hasFired: {}
-    argumentNames: {}
-    firedEventArgumentStore: {}
-    lock: no
-
-    hasFired: (eventNames, val) =>
-        eventNames = [ eventNames ] unless eventNames instanceof Array
-        allFired   = yes
-
-        for eventName in eventNames
-            if val?
-                _hasFired[eventName] = val
-            else if _hasFired[eventName] is no
-                allFired = no
-                break
-
-        return allFired
-
-    setNamedArgsForEvent: (eventName, eventArgs) =>
-        for argName, i in @argumentNames[eventName]
-            @firedEventArgumentStore[eventName][argName] = eventArgs[i]
-
-    setUnnamedArgsForEvent: (eventName, eventArgs) =>
-        @firedEventArgumentStore[eventName] = eventArgs
-
-    setArgsForEvent: (eventName, eventArgs) =>
-        if @argumentNames[eventName]?
-            @setNamedArgsForEvent(eventName, argName, eventArgs[i])
-        else
-            @setUnnamedArgsForEvent(eventName, eventArgs)
-
-    possibleHandlersForSingleEvent: (event) =>
-        handlers = []
-        uuids = Object.keys( @_globalEventHandlers[event] )
-        for uuid in uuids
-            handlers.push( @entries[uuid] )
-        return handlers
+EventEmitter2 = undefined
+EventEmitter = undefined
+Emitter = undefined
+nodeUUID = undefined
 
 
-    getArgsForEvents: (events) =>
-        args = {}
-        args[event] = @firedEventArgumentStore[event] for event in events
-        return args
+if window?
+    {EventEmitter2, EventEmitter, Emitter, uuid} = window
 
-    destroyHandler: (fnOrUUID) =>
-        handler = fnOrUUID
+else if require?
+    try {EventEmitter2} = require 'eventemitter2'
+    catch err
+        {EventEmitter} = require 'events'
+    nodeUUID = require 'node-uuid'
 
-        if typeof fnOrUUID is 'string'
-            handler = @entries[fnOrUUID]
 
-        # determine which events to remove our global listeners for
-        eventsToUnlisten = handler.events
-        for uuid, handler of @entries
-            for event in handler.events
-                if event in eventsToUnlisten
-                    eventsToUnlisten = eventsToUnlisten.filter (item) -> item isnt event
+#
+# # class Switchboard
+#
+class exports.Switchboard extends (EventEmitter2 ? EventEmitter ? Emitter)
 
-                break if eventsToUnlisten.length is 0
-            break if eventsToUnlisten.length is 0
-
-        # now remove those events
-        @removeListener(event, @_globalEventHandlers[event]) for event in eventsToUnlisten
-
-        # destroy the handler
-        delete @entries[handler.uuid]
+    constructor: () ->
+        @_globalEventHandlers = {}
+        @_hasFired = {}
+        @_entries = {}
+        @_argumentNames = {}
+        @_firedEventArgumentStore = {}
 
 
     #
-    # ## registerEventArguments
+    # ## Public instance methods
+    #
+
+
+    #
+    # ### registerEventArguments
     #
     # registers the names of the arguments passed to each respective event
     # callback so that they can be referred to by name.  not required to use
     # switchboard functionality.
     #
     registerEventArguments: (events) =>
-        @argumentNames[event] = args for event, args of events
+        @_argumentNames[event] = args for event, args of events
 
 
     #
-    # ## onSeveral
+    # ### on
     #
     # registers a callback to be executed only after all listed events have
-    # occurred.  functions very similarly to Events.EventEmitter.on().
+    # occurred.  functions very similarly to `EventEmitter.on()`.
     #
     on: (events, callback, once = no) =>
       events = [ events ] unless events instanceof Array
 
-      event_uuid = uuid.v4()
+      event_uuid = nodeUUID.v4()
 
       new_entry = (args...) -> callback(args...)
       new_entry.uuid   = event_uuid
       new_entry.events = events
       new_entry.once   = once
-      @entries[event_uuid] = new_entry
+      @_entries[event_uuid] = new_entry
 
-      for event, i in events then do (event) =>
+      for event, i in events
           unless @_globalEventHandlers[event]?
-              handlerFn = (args...) => @evaluateEvent(event, args...)
+              handlerFn = do (event) => (args...) => @evaluateEvent(event, args...)
+
               @_globalEventHandlers[event] = handlerFn
 
-              if once then @once(event, handlerFn)
+              if once then EventEmitter.prototype.once.call(this, event, handlerFn)
               else super(event, handlerFn)
 
       return event_uuid
 
 
     #
-    # ## onceSeveral
+    # ### once
     #
     # registers a callback to be executed only after all listed events have
     # occurred. the callback will only be executed once, regardless of whether
@@ -123,20 +91,19 @@ class Switchboard extends EventEmitter2
 
 
     #
-    # ## vanGogh
+    # ### vanGogh
     #
     # remove multi-listeners added with `onSeveral`/`onceSeveral`.
     #
     vanGogh: (uuids) =>
-        ## @obtainLockAndCall do (uuids) =>
-        uuids = Object.keys(@entries) if not uuids?
+        uuids = Object.keys(@_entries) if not uuids?
         uuids = [ uuids ] unless uuids instanceof Array
 
         @destroyHandler(uuid) for uuid in uuids
 
 
     #
-    # ## resetEvents
+    # ### resetEvents
     #
     # reset all of the 'event has occurred' flags, either for a single event,
     # a list of events, or all events (if no argument is passed).
@@ -150,22 +117,10 @@ class Switchboard extends EventEmitter2
 
 
 
-
-    obtainLockAndCall: (fn, args...) =>
-        # timer = setInterval (=>
-        #     if @lock is no
-        #         clearInterval(timer)
-        #         @lock = yes
-        fn(args)
-        #         @lock = no
-        # ), 10
-
-
     #
-    # evaluateEvent()
+    # ## Private utility methods
     #
-    # called when any of the registered events is fired.
-    #
+
     evaluateEvent: (eventName, eventArgs) =>
         @hasFired( eventName, yes )
         
@@ -183,5 +138,67 @@ class Switchboard extends EventEmitter2
 
 
 
-(exports ? window).Switchboard = Switchboard
+    hasFired: (eventNames, val) =>
+        eventNames = [ eventNames ] unless eventNames instanceof Array
+        allFired   = yes
+
+        for eventName in eventNames
+            if val?
+                @_hasFired[eventName] = val
+            else unless @_hasFired[eventName] is yes
+                allFired = no
+                break
+
+        return allFired
+
+    setNamedArgsForEvent: (eventName, eventArgs) =>
+        @_firedEventArgumentStore[eventName][argName] = eventArgs[i] for argName, i in @_argumentNames[eventName]
+
+    setUnnamedArgsForEvent: (eventName, eventArgs) =>
+        @_firedEventArgumentStore[eventName] = eventArgs
+
+    setArgsForEvent: (eventName, eventArgs) =>
+        if @_argumentNames[eventName]?
+            @setNamedArgsForEvent(eventName, argName, eventArgs[i])
+        else
+            @setUnnamedArgsForEvent(eventName, eventArgs)
+
+    possibleHandlersForSingleEvent: (event) =>
+        handlers = []
+        for uuid, handler of @_entries
+            if event in handler.events then handlers.push(handler)
+
+        return handlers
+
+
+    getArgsForEvents: (events) =>
+        args = {}
+        args[event] = @_firedEventArgumentStore[event] for event in events
+        return args
+
+    destroyHandler: (fnOrUUID) =>
+        handler = fnOrUUID
+
+        if typeof fnOrUUID is 'string'
+            handler = @_entries[fnOrUUID]
+
+        # determine which events to remove our global listeners for
+        eventsToUnlisten = handler.events
+        for uuid, handler of @_entries
+            for event in handler.events
+                if event in eventsToUnlisten
+                    eventsToUnlisten = eventsToUnlisten.filter (item) -> item isnt event
+
+                break if eventsToUnlisten.length is 0
+            break if eventsToUnlisten.length is 0
+
+        # now remove those events
+        @removeListener(event, @_globalEventHandlers[event]) for event in eventsToUnlisten
+
+        # destroy the handler
+        delete @_entries[handler.uuid]
+
+
+
+# (exports ? window).Switchboard = Switchboard
 

@@ -2,7 +2,7 @@
 	"author": "bryn austin bellomy <bryn@signals.io> (http://signals.io)",
 	"name": "switchboard",
 	"description": "Event listener for the browser and node.js for composite events (i.e., will not trigger until several specified events occur).",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"homepage": "http://github.com/brynbellomy/node-switchboard",
 	"repository": {
 		"type": "git",
